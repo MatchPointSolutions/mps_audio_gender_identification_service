@@ -46,6 +46,6 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           acrName: mpsacr
-          containerAppName: mps-audio-gender-identification-service
+          containerAppName: gender-identification-service
           resourceGroup: audio-poc-rg
           imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
