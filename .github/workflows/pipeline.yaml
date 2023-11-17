@@ -29,23 +29,23 @@ jobs:
           IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
 
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${IMAGE_TAG}
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-  #     - name: Set outputs
-  #       id: vars
-  #       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-  #     - name: 'Login via Azure CLI'
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{secrets.AZURE_CREDENTIALS}}
-  #     - name: deploy Container App
-  #       uses: azure/container-apps-deploy-action@v1
-  #       with:
-  #         acrName: mpsacr
-  #         containerAppName: mps-audio-gender-identification-service
-  #         resourceGroup: audio-poc-rg
-  #         imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      - name: deploy Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          acrName: mpsacr
+          containerAppName: mps-audio-gender-identification-service
+          resourceGroup: audio-poc-rg
+          imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
