@@ -5,7 +5,7 @@ app = FastAPI()
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
-    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav", "audio/mpeg"]:
+    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav", "audio/mpeg", "audio/vnd.dlna.adts"]:
         return {"error": "Invalid file format. Please upload MP3 or AAC files."}
 
     # Save the file
