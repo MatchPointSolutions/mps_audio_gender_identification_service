@@ -8,3 +8,5 @@ scikit-learn
 joblib
 resampy
 python-dotenv
+pyannote.audio
+torch

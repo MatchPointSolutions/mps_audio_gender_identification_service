@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 import uvicorn
 from voice_recognition_model import identify_the_audio
+from multi_voice_recognition_model import get_multi_voice_output
 from log import setup_logger
 logger = setup_logger(__name__)
 app = FastAPI()
@@ -15,7 +16,20 @@ async def create_upload_file(file: UploadFile = File(...)):
         f.write(file.file.read())
     logger.info(file.filename)
     result = identify_the_audio(file.filename)
-    os.remove(file.filename)
+    return {"filename": file.filename,
+            "result": result}
+
+
+@app.post("/test_multiaudio_pyannote/")
+async def upload_file(file: UploadFile = File(...)):
+    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav", "audio/mpeg", "audio/vnd.dlna.adts"]:
+        return {"error": "Invalid file format. Please upload MP3 or AAC files."}
+
+    # Save the file
+    with open(file.filename, "wb") as f:
+        f.write(file.file.read())
+    logger.info(file.filename)
+    result = get_multi_voice_output(file.filename)
     return {"filename": file.filename,
             "result": result}
 
