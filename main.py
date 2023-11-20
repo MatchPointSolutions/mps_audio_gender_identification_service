@@ -15,6 +15,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         f.write(file.file.read())
     logger.info(file.filename)
     result = identify_the_audio(file.filename)
+    os.remove(file.filename)
     return {"filename": file.filename,
             "result": result}
 
