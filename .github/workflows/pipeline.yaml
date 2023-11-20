@@ -49,7 +49,7 @@ jobs:
           containerAppName: gender-identification-service
           resourceGroup: audio-poc-rg
           imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
-          environmentVariables:
-            LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
-            MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
-            DATASET: ${{ secrets.DATASET }}
+          # environmentVariables:
+          #   - LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
+          #     MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
+          #     DATASET: ${{ secrets.DATASET }}
