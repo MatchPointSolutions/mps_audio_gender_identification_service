@@ -29,4 +29,4 @@ def get_multi_voice_output(audio_file):
         librosa.save(file_name_1+i+file_name_2, extracted_audio, sr)
         result = identify_the_audio(file_name_1+i+file_name_2)
         i=i+1
-    return speaker_list.append(result)
+    return speaker_list.append(list(result))
