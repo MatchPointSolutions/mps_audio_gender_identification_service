@@ -1,4 +1,4 @@
-#import torch
+import os
 from pyannote.audio import Pipeline
 from config import ACCESS_TOKEN
 from log import setup_logger
@@ -16,7 +16,7 @@ def get_multi_voice_output(audio_file):
     speaker_list = []
     file_name_1 = "extracted_audio_"
     file_name_2 = ".wav"
-
+    unique_speakers = set()
     i = 0
     for turn, _, speaker in diarization.itertracks(yield_label=True):
         start_time = turn.start
@@ -29,8 +29,11 @@ def get_multi_voice_output(audio_file):
         extracted_audio_file = f"{file_name_1}{i}{file_name_2}.wav"
         sf.write(extracted_audio_file, extracted_audio, sr)
         result = identify_the_audio(extracted_audio_file)
-        print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker} Identified Speakers: {result}")
-        speaker_list.extend(result)
+        if speaker not in unique_speakers:
+            print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker} Identified Speakers: {result}")
+            unique_speakers.add(speaker)
+            speaker_list.extend(result)
+        os.remove(extracted_audio_file)
         i += 1
 
     return speaker_list
