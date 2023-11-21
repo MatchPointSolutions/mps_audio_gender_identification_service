@@ -26,7 +26,7 @@ def get_multi_voice_output(audio_file):
         start_sample = int(start_sample)
         end_sample = int(end_sample)
         extracted_audio = y[start_sample:end_sample]
-        extracted_audio_file = f"{file_name_1}{i}{file_name_2}.wav"
+        extracted_audio_file = f"{file_name_1}{i}{file_name_2}"
         sf.write(extracted_audio_file, extracted_audio, sr)
         result = identify_the_audio(extracted_audio_file)
         if speaker not in unique_speakers:
