@@ -1,4 +1,5 @@
 import os
+from collections import Counter
 from pyannote.audio import Pipeline
 from config import ACCESS_TOKEN
 from log import setup_logger
@@ -32,8 +33,12 @@ def get_multi_voice_output(audio_file):
         if speaker not in unique_speakers:
             print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker} Identified Speakers: {result}")
             unique_speakers.add(speaker)
-            speaker_list.extend(result)
+            speaker_list.append(result)
         os.remove(extracted_audio_file)
         i += 1
-
-    return speaker_list
+    gender_counts = Counter(speaker_list)
+    male_count = gender_counts.get("male", 0)
+    female_count = gender_counts.get("female", 0)
+    Counts = {"No of Male Voices": f"{male_count}",
+              "No of Female Voices": f"{female_count}"}
+    return Counts

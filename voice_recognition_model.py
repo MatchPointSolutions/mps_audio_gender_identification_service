@@ -70,6 +70,10 @@ def identify_the_audio(input_file,model_filename=MODEL_FILENAME):
     new_audio_features = extract_features_1(input_file)
     prediction = loaded_model.predict([new_audio_features])
     logger.info(f"Predicted gender: {'female' if prediction[0] == 1 else 'male'}")
-    return (f"Predicted gender: {'female' if prediction[0] == 1 else 'male'}")
+    if prediction[0] == 1:
+        return "female"
+    else:
+        return "male"
+
 
 
