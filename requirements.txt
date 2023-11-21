@@ -10,3 +10,4 @@ resampy
 python-dotenv
 pyannote.audio
 torch
+soundfile
