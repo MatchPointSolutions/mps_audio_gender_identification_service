@@ -8,8 +8,8 @@ app = FastAPI()
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
-    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav", "audio/mpeg", "audio/vnd.dlna.adts"]:
-        return {"error": "Invalid file format. Please upload MP3 or AAC files."}
+    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav"]:
+        return {"error": "Invalid file format. Please upload MP3 or WAV files."}
 
     # Save the file
     with open(file.filename, "wb") as f:
@@ -22,8 +22,8 @@ async def create_upload_file(file: UploadFile = File(...)):
 
 @app.post("/test_multiaudio_pyannote/")
 async def upload_file(file: UploadFile = File(...)):
-    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav", "audio/mpeg", "audio/vnd.dlna.adts"]:
-        return {"error": "Invalid file format. Please upload MP3 or AAC files."}
+    if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav"]:
+        return {"error": "Invalid file format. Please upload MP3 or WAV files."}
 
     # Save the file
     with open(file.filename, "wb") as f:
