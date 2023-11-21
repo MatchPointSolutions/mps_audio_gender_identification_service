@@ -13,7 +13,10 @@ def get_multi_voice_output(audio_file):
     diarization = pipeline(audio_file)
     # Load audio file
     y, sr = librosa.load(audio_file)
-    speaker_list = [], file_name_1="extracted_audio", file_name_2 =".wav", i=0
+    speaker_list = [],
+    file_name_1="extracted_audio",
+    file_name_2 =".wav",
+    i=0
     for turn, _, speaker in diarization.itertracks(yield_label=True):
         logger.info(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
         #speaker_list.append(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
