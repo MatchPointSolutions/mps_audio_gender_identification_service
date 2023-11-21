@@ -22,8 +22,8 @@ def get_multi_voice_output(audio_file):
         #speaker_list.append(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
         start_time = turn.start
         end_time = turn.end
-        start_sample = float(start_time * sr)
-        end_sample = float(end_time * sr)
+        start_sample = int(start_time * sr)
+        end_sample = int(end_time * sr)
         extracted_audio = y[start_sample:end_sample]
         # Save extracted audio
         librosa.save(file_name_1+i+file_name_2, extracted_audio, sr)
