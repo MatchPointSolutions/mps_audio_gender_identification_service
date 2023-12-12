@@ -19,6 +19,14 @@ jobs:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/*.dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
       - name: Build and tag Docker image
         run: >
           IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
