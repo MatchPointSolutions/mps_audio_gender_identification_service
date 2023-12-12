@@ -1,21 +1,15 @@
 
-FROM python:3.9-slim
+FROM acoustid/chromaprint-build:latest
 
 
 WORKDIR /app
 
-COPY requirements.txt /app/
-
-# Update the package index and install GCC
-RUN apt-get update \
-    && apt-get install -y gcc \
-                          libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-COPY . /app/
+COPY . .
 
 
 EXPOSE 8000
