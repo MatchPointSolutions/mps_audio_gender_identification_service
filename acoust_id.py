@@ -19,6 +19,7 @@ def generate_fingerprint(file_path):
         )
         fingerprint = result.stderr.split('fingerprint: ')[1].strip()
         logger.info(f"Fingerprint Generated for {file_path}")
+        print(f"Fingerprint Generated for {file_path}")
         return fingerprint
     except Exception as error:
         logger.info(f"Error generating fingerprint: {error}")
@@ -32,6 +33,7 @@ def get_duration(file_path):
         result = subprocess.run(['ffprobe', '-i', file_path, '-show_entries', 'format=duration', '-v', 'quiet', '-of', 'csv=p=0'],
                                 capture_output=True, text=True)
         duration = float(result.stdout.strip())
+        print(f"duration: {duration}")
         return duration
     except Exception as error:
         logger.info(f"Error getting audio duration: {error}")
@@ -45,10 +47,10 @@ def get_acoust_id_audio_details(file_path):
     api_key = ACOUST_ID_TOKEN
     try:
         url = f'https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}'
-        logger.info(f"url: {url}")
+        print(f"url: {url}")
         response = requests.get(url)
         data = response.json()
-        logger.info(f"response data: {data}")
+        print(f"response data: {data}")
         if 'results' in data and data['results']:
             result = data['results'][0]
             recording_id = result['id']
@@ -61,10 +63,15 @@ def get_acoust_id_audio_details(file_path):
             logger.info(f"Recording ID: {recording_id}")
             logger.info(f"Title: {title}")
             logger.info(f"Artist: {artist}")
+            print(f"Recording ID: {recording_id}")
+            print(f"Title: {title}")
+            print(f"Artist: {artist}")
             return data_dict
         else:
             logger.info("No matching result found.")
+            print("No matching result found.")
             return {f"Else block: {data}"}
     except Exception as error:
+        print(f"Error: {error}")
         logger.info(f"Error: {error}")
         return error
