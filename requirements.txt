@@ -11,3 +11,7 @@ python-dotenv
 pyannote.audio
 torch
 soundfile
+pydub
+chromaprint
+pyaudio
+pyacoustid

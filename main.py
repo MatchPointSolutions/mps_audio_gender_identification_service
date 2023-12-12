@@ -1,7 +1,9 @@
 from fastapi import FastAPI, File, UploadFile
 import uvicorn
+from acr_cloud import acr_cloud_identify_audio
 from voice_recognition_model import identify_the_audio
 from multi_voice_recognition_model import get_multi_voice_output
+from acoust_id import get_acoust_id_audio_details
 from log import setup_logger
 logger = setup_logger(__name__)
 app = FastAPI()
@@ -35,5 +37,37 @@ async def upload_file(file: UploadFile = File(...)):
     except Exception as error:
         return {"Error": str(error)}
 
+@app.post("/test_acr_cloud/")
+async def upload_file(file: UploadFile = File(...)):
+    # if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav"]:
+    #     return {"error": "Invalid file format. Please upload MP3 or WAV files."}
+
+    try:
+        with open(file.filename, "wb") as f:
+            f.write(file.file.read())
+        logger.info(file.filename)
+        result = acr_cloud_identify_audio(file.filename)
+        return {"filename": file.filename,
+                "result": result}
+    except Exception as error:
+        return {"Error": str(error)}
+
+@app.post("/test_acoust_id/")
+async def upload_file(file: UploadFile = File(...)):
+    # if file.content_type not in ["audio/mp3", "audio/aac", "audio/wav"]:
+    #     return {"error": "Invalid file format. Please upload MP3 or WAV files."}
+
+    try:
+        with open(file.filename, "wb") as f:
+            f.write(file.file.read())
+        logger.info(file.filename)
+        result = get_acoust_id_audio_details(file.filename)
+        return {"filename": file.filename,
+                "result": result}
+    except Exception as error:
+        return {"Error": str(error)}
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level="info")
+
+
