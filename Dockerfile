@@ -1,12 +1,16 @@
+FROM python:3.9.18-alpine3.19
 
-FROM acoustid/chromaprint-build:latest
+RUN apk add --no-cache bash cmake make g++ curl git bash yasm pkgconfig
+
+# Install Chromaprint
+RUN apk add --no-cache chromaprint-dev ffmpeg
 
 
 WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 
 COPY . .
