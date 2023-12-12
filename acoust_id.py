@@ -42,6 +42,7 @@ def get_acoust_id_audio_details(file_path):
         url = f'https://api.acoustid.org/v2/lookup?client={api_key}&fingerprint={fingerprint}'
         response = requests.get(url)
         data = response.json()
+        logger.info(f"response data: {data}")
         if 'results' in data and data['results']:
             result = data['results'][0]
             recording_id = result['id']
@@ -50,13 +51,14 @@ def get_acoust_id_audio_details(file_path):
             data_dict["Recording ID"] = recording_id
             data_dict["Title"] = title
             data_dict["Artist"] = artist
+            data_dict["jsondata"] = response.json()
             logger.info(f"Recording ID: {recording_id}")
             logger.info(f"Title: {title}")
             logger.info(f"Artist: {artist}")
             return data_dict
         else:
             logger.info("No matching result found.")
-            return data_dict
+            return {f"Else block: {data}"}
     except Exception as error:
         logger.info(f"Error: {error}")
         return error
