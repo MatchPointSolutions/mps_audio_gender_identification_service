@@ -45,6 +45,7 @@ def get_acoust_id_audio_details(file_path):
     api_key = ACOUST_ID_TOKEN
     try:
         url = f'https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}'
+        logger.info(f"url: {url}")
         response = requests.get(url)
         data = response.json()
         logger.info(f"response data: {data}")
