@@ -5,22 +5,41 @@ from config import ACOUST_ID_TOKEN
 from log import setup_logger
 logger = setup_logger(__name__)
 
+
+import subprocess
+
 def generate_fingerprint(file_path):
-    audio = AudioSegment.from_wav(file_path)
-    pcm_data = audio.raw_data
-    pcm_array = bytearray(pcm_data)
-    fingerprint, duration = chromaprint.decode_fingerprint(pcm_array, audio.frame_rate)
-    logger.info(f"Generated fingerprint: {fingerprint}")
-    logger.info(f"Generated duration: {duration}")
-    return fingerprint,duration
+    try:
+        result = subprocess.run(
+            ['ffmpeg', '-i', file_path, '-filter_complex', 'aformat=dblp,showwavespic=s=1024x512', '-f', 'null', '-'],
+            capture_output=True,
+            text=True
+        )
+        fingerprint = result.stderr.split('fingerprint: ')[1].strip()
+        logger.info(f"Fingerprint Generated for {file_path}")
+        return fingerprint
+    except Exception as error:
+        logger.info(f"Error generating fingerprint: {error}")
+        return(f"Error : {error}")
+
+
+
+# def generate_fingerprint(file_path):
+#     audio = AudioSegment.from_wav(file_path)
+#     pcm_data = audio.raw_data
+#     pcm_array = bytearray(pcm_data)
+#     fingerprint, duration = chromaprint.decode_fingerprint(pcm_array, audio.frame_rate)
+#     logger.info(f"Generated fingerprint: {fingerprint}")
+#     logger.info(f"Generated duration: {duration}")
+#     return fingerprint,duration
 
 
 def get_acoust_id_audio_details(file_path):
     data_dict = dict()
-    fingerprint, duration = generate_fingerprint(file_path)
+    fingerprint= generate_fingerprint(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
-        url = f'https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}'
+        url = f'https://api.acoustid.org/v2/lookup?client={api_key}&fingerprint={fingerprint}'
         response = requests.get(url)
         data = response.json()
         if 'results' in data and data['results']:
