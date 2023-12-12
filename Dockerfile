@@ -10,6 +10,7 @@ COPY requirements.txt /app/
 RUN apt-get update \
     && apt-get install -y gcc \
                           libasound-dev \
+                          apt-utils \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir -r requirements.txt
