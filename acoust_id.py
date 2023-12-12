@@ -1,6 +1,7 @@
 from pydub import AudioSegment
 import chromaprint
 import requests
+import acoustid
 import re
 import subprocess
 from config import ACOUST_ID_TOKEN
@@ -10,21 +11,33 @@ logger = setup_logger(__name__)
 
 
 
+# def generate_fingerprint(file_path):
+#     try:
+#         result = subprocess.run(
+#             ['ffmpeg', '-i', file_path, '-filter_complex', 'aformat=dblp,showwavespic=s=1024x512', '-f', 'null', '-'],
+#             capture_output=True,
+#             text=True
+#         )
+#         fingerprint = result.stderr.split('fingerprint: ')[1].strip()
+#         logger.info(f"Fingerprint Generated for {file_path}")
+#         print(f"Fingerprint Generated for {file_path}")
+#         return fingerprint
+#     except Exception as error:
+#         logger.info(f"Error generating fingerprint: {error}")
+#         return(f"Error : {error}")
+
+
+
 def generate_fingerprint(file_path):
     try:
-        result = subprocess.run(
-            ['ffmpeg', '-i', file_path, '-filter_complex', 'aformat=dblp,showwavespic=s=1024x512', '-f', 'null', '-'],
-            capture_output=True,
-            text=True
-        )
-        fingerprint = result.stderr.split('fingerprint: ')[1].strip()
+        duration, fp = acoustid.fingerprint_file(file_path)
+        fingerprint = acoustid.fingerprint_encode(fp)
         logger.info(f"Fingerprint Generated for {file_path}")
         print(f"Fingerprint Generated for {file_path}")
         return fingerprint
     except Exception as error:
         logger.info(f"Error generating fingerprint: {error}")
-        return(f"Error : {error}")
-
+        return f"Error: {error}"
 
 
 
@@ -46,7 +59,7 @@ def get_acoust_id_audio_details(file_path):
     duration = get_duration(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
-        url = f'https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}'
+        url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}"""
         print(f"url: {url}")
         response = requests.get(url)
         data = response.json()
