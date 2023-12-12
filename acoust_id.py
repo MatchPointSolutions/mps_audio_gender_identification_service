@@ -1,12 +1,14 @@
 from pydub import AudioSegment
 import chromaprint
 import requests
+import re
+import subprocess
 from config import ACOUST_ID_TOKEN
 from log import setup_logger
 logger = setup_logger(__name__)
 
 
-import subprocess
+
 
 def generate_fingerprint(file_path):
     try:
@@ -24,22 +26,25 @@ def generate_fingerprint(file_path):
 
 
 
-# def generate_fingerprint(file_path):
-#     audio = AudioSegment.from_wav(file_path)
-#     pcm_data = audio.raw_data
-#     pcm_array = bytearray(pcm_data)
-#     fingerprint, duration = chromaprint.decode_fingerprint(pcm_array, audio.frame_rate)
-#     logger.info(f"Generated fingerprint: {fingerprint}")
-#     logger.info(f"Generated duration: {duration}")
-#     return fingerprint,duration
+
+def get_duration(file_path):
+    try:
+        result = subprocess.run(['ffprobe', '-i', file_path, '-show_entries', 'format=duration', '-v', 'quiet', '-of', 'csv=p=0'],
+                                capture_output=True, text=True)
+        duration = float(result.stdout.strip())
+        return duration
+    except Exception as error:
+        logger.info(f"Error getting audio duration: {error}")
+        return(f"Error: {error}")
 
 
 def get_acoust_id_audio_details(file_path):
     data_dict = dict()
     fingerprint= generate_fingerprint(file_path)
+    duration = get_duration(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
-        url = f'https://api.acoustid.org/v2/lookup?client={api_key}&fingerprint={fingerprint}'
+        url = f'https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}'
         response = requests.get(url)
         data = response.json()
         logger.info(f"response data: {data}")
