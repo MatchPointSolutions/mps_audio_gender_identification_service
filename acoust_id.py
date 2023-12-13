@@ -19,15 +19,18 @@ def generate_fingerprint(file_path):
             text=True,
             check=True
         )
-        if 'fingerprint: ' in result.stderr:
-            fingerprint = result.stderr.split('fingerprint: ')[1].strip()
-            logger.info(f"Fingerprint generated for {file_path}")
-            print(f"Fingerprint generated for {file_path}")
-            return fingerprint
-        else:
-            logger.error("Fingerprint not found in stderr.")
-            print("Fingerprint not found in stderr.")
-            return None
+        output = result.stderr
+        print(output)
+        return output
+        # if 'fingerprint: ' in result.stderr:
+        #     fingerprint = result.stderr.split('fingerprint: ')[1].strip()
+        #     logger.info(f"Fingerprint generated for {file_path}")
+        #     print(f"Fingerprint generated for {file_path}")
+        #     return fingerprint
+        # else:
+        #     logger.error("Fingerprint not found in stderr.")
+        #     print("Fingerprint not found in stderr.")
+        #     return None
 
     except subprocess.CalledProcessError as error:
         logger.error(f"Error generating fingerprint: {error}")
