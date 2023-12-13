@@ -14,18 +14,26 @@ logger = setup_logger(__name__)
 def generate_fingerprint(file_path):
     try:
         result = subprocess.run(
-            ['ffmpeg', '-i', file_path, '-filter_complex', 'aformat=dblp,showwavespic=s=1024x512', '-f', 'null', '-'],
+            ['ffmpeg', '-i', file_path, '-f', 'chromaprint', '-'],
             capture_output=True,
-            text=True
+            text=True,
+            check=True
         )
-        fingerprint = result.stderr.split('fingerprint: ')[1].strip()
-        logger.info(f"Fingerprint Generated for {file_path}")
-        print(f"Fingerprint Generated for {file_path}")
-        return fingerprint
-    except Exception as error:
-        logger.info(f"Error generating fingerprint: {error}")
+        if 'fingerprint: ' in result.stderr:
+            fingerprint = result.stderr.split('fingerprint: ')[1].strip()
+            logger.info(f"Fingerprint generated for {file_path}")
+            print(f"Fingerprint generated for {file_path}")
+            return fingerprint
+        else:
+            logger.error("Fingerprint not found in stderr.")
+            print("Fingerprint not found in stderr.")
+            return None
+
+    except subprocess.CalledProcessError as error:
+        logger.error(f"Error generating fingerprint: {error}")
         print(f"Error generating fingerprint: {error}")
-        return(f"Error : {error}")
+        return None
+
 
 
 
