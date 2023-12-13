@@ -50,7 +50,7 @@ def calculate_fingerprints(filename):
         print(fpcalc_out)
         fingerprint_index = fpcalc_out.find('FINGERPRINT=') + 12
         fingerprints = list(map(int, fpcalc_out[fingerprint_index:].split(',')))
-        print(f"Fingerprints from fpcalc: {fingerprints}")
+        print(fingerprints)
         return fingerprints
 
     except subprocess.CalledProcessError as e:
@@ -91,7 +91,7 @@ def get_acoust_id_audio_details(file_path):
     api_key = ACOUST_ID_TOKEN
     try:
         url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}"""
-        print(f"url: {url}")
+        print(url)
         response = requests.get(url)
         data = response.json()
         print(f"response data: {data}")
