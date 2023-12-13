@@ -9,6 +9,7 @@ joblib
 resampy
 python-dotenv
 pyannote.audio
+torch
 soundfile
 pydub
 chromaprint
