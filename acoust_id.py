@@ -43,12 +43,18 @@ def generate_fingerprint(file_path):
 
 def calculate_fingerprints(filename):
     sample_time = 5000
-    fpcalc_out = commands.getoutput('fpcalc -raw -length %i %s'
-                                    % (sample_time, filename))
-    fingerprint_index = fpcalc_out.find('FINGERPRINT=') + 12
-    fingerprints = map(int, fpcalc_out[fingerprint_index:].split(','))
-    print(f"fingerprints from fpcalc : {fingerprints}")
-    return fingerprints
+    command = ['fpcalc', '-raw', '-length', str(sample_time), filename]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        fpcalc_out = result.stdout
+        fingerprint_index = fpcalc_out.find('FINGERPRINT=') + 12
+        fingerprints = list(map(int, fpcalc_out[fingerprint_index:].split(',')))
+        print(f"Fingerprints from fpcalc: {fingerprints}")
+        return fingerprints
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error running fpcalc: {e}")
+        return None
 
 
 # def generate_fingerprint(file_path):
@@ -78,8 +84,8 @@ def get_duration(file_path):
 
 def get_acoust_id_audio_details(file_path):
     data_dict = dict()
-    fpcalc_fingerprint = calculate_fingerprints(file_path)
-    fingerprint= generate_fingerprint(file_path)
+    fingerprint = calculate_fingerprints(file_path)
+    # fingerprint= generate_fingerprint(file_path)
     duration = get_duration(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
