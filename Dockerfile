@@ -9,6 +9,7 @@ RUN apk add --no-cache chromaprint-dev ffmpeg
 WORKDIR /app
 
 COPY requirements.txt .
+RUN pip install https://download.pytorch.org/whl/cu101/torch-1.4.0-cp38-cp38-linux_x86_64.whl
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
