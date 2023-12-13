@@ -15,4 +15,3 @@ pydub
 chromaprint
 pyaudio
 pyacoustid
-commands
