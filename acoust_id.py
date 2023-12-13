@@ -1,8 +1,8 @@
 from pydub import AudioSegment
-import chromaprint
+# import chromaprint
 import requests
-import acoustid
-import commands
+# import acoustid
+# import commands
 import re
 import subprocess
 from config import ACOUST_ID_TOKEN
