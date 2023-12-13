@@ -52,6 +52,8 @@ def calculate_fingerprints(filename):
         duration = int(data[duration_index:duration_end_index])
         fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
         fingerprint = data[fingerprint_index:].strip()
+        print(fingerprint)
+        print(duration)
         return duration, fingerprint
 
     except subprocess.CalledProcessError as e:
