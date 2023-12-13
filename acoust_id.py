@@ -43,7 +43,7 @@ def generate_fingerprint(file_path):
 
 def calculate_fingerprints(filename):
     sample_time = 5000
-    command = ['fpcalc', '-raw', '-length', str(sample_time), filename]
+    command = ['fpcalc', filename]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         fpcalc_out = result.stdout
