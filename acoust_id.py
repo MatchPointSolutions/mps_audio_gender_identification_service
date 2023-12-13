@@ -86,9 +86,9 @@ def get_duration(file_path):
 
 def get_acoust_id_audio_details(file_path):
     data_dict = dict()
-    fingerprint = calculate_fingerprints(file_path)
+    duration,fingerprint = calculate_fingerprints(file_path)
     # fingerprint= generate_fingerprint(file_path)
-    duration = get_duration(file_path)
+    # duration = get_duration(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
         url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}"""
