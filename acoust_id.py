@@ -87,10 +87,7 @@ def get_duration(file_path):
 
 
 def get_acoust_id_audio_details(file_path):
-    data_dict = dict()
     duration,fingerprint = calculate_fingerprints(file_path)
-    # fingerprint= generate_fingerprint(file_path)
-    # duration = get_duration(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
         url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&duration={duration}&fingerprint={fingerprint}"""
@@ -98,26 +95,7 @@ def get_acoust_id_audio_details(file_path):
         response = requests.get(url)
         data = response.json()
         print(f"response data: {data}")
-        if 'results' in data and data['results']:
-            result = data['results'][0]
-            recording_id = result['id']
-            title = result['recordings'][0]['title']
-            artist = result['recordings'][0]['artists'][0]['name']
-            data_dict["Recording ID"] = recording_id
-            data_dict["Title"] = title
-            data_dict["Artist"] = artist
-            data_dict["jsondata"] = response.json()
-            logger.info(f"Recording ID: {recording_id}")
-            logger.info(f"Title: {title}")
-            logger.info(f"Artist: {artist}")
-            print(f"Recording ID: {recording_id}")
-            print(f"Title: {title}")
-            print(f"Artist: {artist}")
-            return data_dict
-        else:
-            logger.info("No matching result found.")
-            print("No matching result found.")
-            return {f"Else block: {data}"}
+        return data
     except Exception as error:
         print(f"Error: {error}")
         logger.info(f"Error: {error}")
