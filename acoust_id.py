@@ -47,6 +47,7 @@ def calculate_fingerprints(filename):
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         fpcalc_out = result.stdout
+        print(fpcalc_out)
         fingerprint_index = fpcalc_out.find('FINGERPRINT=') + 12
         fingerprints = list(map(int, fpcalc_out[fingerprint_index:].split(',')))
         print(f"Fingerprints from fpcalc: {fingerprints}")
