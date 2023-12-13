@@ -46,12 +46,13 @@ def calculate_fingerprints(filename):
     command = ['fpcalc', filename]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        fpcalc_out = result.stdout
-        print(fpcalc_out)
-        fingerprint_index = fpcalc_out.find('FINGERPRINT=') + 12
-        fingerprints = list(map(int, fpcalc_out[fingerprint_index:].split(',')))
-        print(fingerprints)
-        return fingerprints
+        data = str(result.stdout)
+        duration_index = data.find('DURATION=') + len('DURATION=')
+        duration_end_index = data.find('\n', duration_index)
+        duration = int(data[duration_index:duration_end_index])
+        fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
+        fingerprint = data[fingerprint_index:].strip()
+        return duration, fingerprint
 
     except subprocess.CalledProcessError as e:
         print(f"Error running fpcalc: {e}")
