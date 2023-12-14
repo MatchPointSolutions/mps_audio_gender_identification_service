@@ -90,7 +90,7 @@ def get_acoust_id_audio_details(file_path):
     duration,fingerprint = calculate_fingerprints(file_path)
     api_key = ACOUST_ID_TOKEN
     try:
-        url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&meta=recordings+releasegroups+compress&duration={duration}&fingerprint={fingerprint}"""
+        url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&meta=recordings+compress&duration={duration}&fingerprint={fingerprint}"""
         print(url)
         response = requests.get(url)
         data = response.json()
