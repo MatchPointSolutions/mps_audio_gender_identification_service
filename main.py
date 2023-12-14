@@ -47,19 +47,24 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/test_acoust_id/")
 async def upload_file(receiver_email, file: UploadFile = File(...)):
     try:
+        data_dict = dict()
         with open(file.filename, "wb") as f:
             f.write(file.file.read())
         logger.info(file.filename)
         result = get_acoust_id_audio_details(file.filename)
+        jsondata = {"filename": file.filename,
+                    "result": result}
+        data_dict["title"] = jsondata["result"]["results"][0]["recordings"][2]["title"]
+        data_dict["artist"] = jsondata["result"]["results"][0]["recordings"][2]["artists"]
+        data_dict["filename"] = file.filename
         body = f"""The Result from processed Audio file:
-                    {result}"""
+                    {data_dict}"""
         try:
             send_email(SUBJECT, body,str(receiver_email), SMTP_SERVER, SMTP_PORT, SMTP_USER, SMTP_PASSWORD)
             print(f"Email Notification sent to {receiver_email}")
         except:
             print("Email Notification not sent")
-        return {"filename": file.filename,
-                "result": result}
+        return {"result": data_dict}
     except Exception as error:
         return {"Error": str(error)}
 
