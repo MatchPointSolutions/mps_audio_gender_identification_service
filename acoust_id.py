@@ -1,9 +1,4 @@
-# from pydub import AudioSegment
-# import chromaprint
 import requests
-# import acoustid
-# import commands
-import re
 import subprocess
 from config import ACOUST_ID_TOKEN
 from log import setup_logger
@@ -23,26 +18,13 @@ def generate_fingerprint(file_path):
         output = result.stderr
         print(output)
         return output
-        # if 'fingerprint: ' in result.stderr:
-        #     fingerprint = result.stderr.split('fingerprint: ')[1].strip()
-        #     logger.info(f"Fingerprint generated for {file_path}")
-        #     print(f"Fingerprint generated for {file_path}")
-        #     return fingerprint
-        # else:
-        #     logger.error("Fingerprint not found in stderr.")
-        #     print("Fingerprint not found in stderr.")
-        #     return None
-
     except subprocess.CalledProcessError as error:
         logger.error(f"Error generating fingerprint: {error}")
         print(f"Error generating fingerprint: {error}")
         return None
 
 
-
-
 def calculate_fingerprints(filename):
-    sample_time = 5000
     command = ['fpcalc', filename]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
@@ -59,19 +41,6 @@ def calculate_fingerprints(filename):
     except subprocess.CalledProcessError as e:
         print(f"Error running fpcalc: {e}")
         return None
-
-
-# def generate_fingerprint(file_path):
-#     try:
-#         duration, fp = acoustid.fingerprint_file(file_path)
-#         fingerprint = acoustid.fingerprint_encode(fp)
-#         logger.info(f"Fingerprint Generated for {file_path}")
-#         print(f"Fingerprint Generated for {file_path}")
-#         return fingerprint
-#     except Exception as error:
-#         logger.info(f"Error generating fingerprint: {error}")
-#         return f"Error: {error}"
-
 
 
 def get_duration(file_path):
