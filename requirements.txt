@@ -16,3 +16,5 @@ chromaprint
 pyaudio
 pyacoustid
 secure-smtplib
+gradio
+pathlib
