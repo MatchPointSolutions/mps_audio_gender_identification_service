@@ -54,6 +54,7 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
             f.write(file.file.read())
         logger.info(file.filename)
         result = get_acoust_id_audio_details(file.filename)
+
         jsondata = {"filename": file.filename,
                     "result": result}
         data_dict["title"] = jsondata["result"]["results"][0]["recordings"][2]["title"]
@@ -77,14 +78,16 @@ def gradio_audio_file_analysis(input_file,receiver_email):
     try:
         temp_file_path = Path(input_file)
         result = get_acoust_id_audio_details(input_file)
+        result1 = get_multi_voice_output(input_file)
         jsondata = {"filename": temp_file_path.name,
                     "result": result}
         title = jsondata["result"]["results"][0]["recordings"][2].get("title","")
-        artist = jsondata["result"]["results"][0]["recordings"][2].get("artists","")
+        artist = jsondata["result"]["results"][0]["recordings"][2].get("artists","")[0]["name"]
         filename  = temp_file_path.name
         body = f"""
             Thank you for using Matchpoint Audio Analyzer service. Our System has analyzed the audio file and Below are the analysis details.
                 Human Voices:
+                {result1}
                 No. of Male voices :
                 No. of femal Voices :
                 Music Title : {title}
