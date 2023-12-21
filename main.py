@@ -124,10 +124,12 @@ demo1 = gr.Interface(fn= gradio_audio_file_analysis,
                     ],
                     outputs = "text",
                     allow_flagging="never")
-demo1.launch(server_name="0.0.0.0", server_port=7860)
 
 demo2 = gr.Interface(fn= audio_seperator,
                     inputs = "file",
                     outputs = "text",
                     allow_flagging="never")
-demo2.launch(server_name="0.0.0.0", server_port=7860)
+
+
+demo = gr.TabbedInterface([demo1, demo2], ["Audio File Uploader", "Audio File Seperator"])
+demo.launch(server_name="0.0.0.0", server_port=7860)
