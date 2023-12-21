@@ -125,4 +125,4 @@ demo = gr.Interface(fn= gradio_audio_file_analysis,
                     ],
                     outputs = "text",
                     allow_flagging="never")
-demo.launch()
+demo.launch(server_name="0.0.0.0", server_port=7860)
