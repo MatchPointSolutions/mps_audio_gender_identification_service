@@ -18,3 +18,4 @@ pyacoustid
 secure-smtplib
 gradio
 pathlib
+spleeter
