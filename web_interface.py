@@ -2,7 +2,7 @@ import gradio as gr
 from pathlib import Path
 from acoust_id import get_acoust_id_audio_details
 
-def audio_file_analysis(input_file):
+def gradio_audio_file_analysis(input_file):
     try:
         temp_file_path = Path(input_file)
         result = get_acoust_id_audio_details(input_file)

@@ -1,5 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 import uvicorn
+import gradio as gr
+from pathlib import Path
 from email_notification import send_email
 from acr_cloud import acr_cloud_identify_audio
 from voice_recognition_model import identify_the_audio
@@ -68,7 +70,56 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
     except Exception as error:
         return {"Error": str(error)}
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level="info")
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level="info")
 
+def gradio_audio_file_analysis(input_file,receiver_email):
+    try:
+        temp_file_path = Path(input_file)
+        result = get_acoust_id_audio_details(input_file)
+        jsondata = {"filename": temp_file_path.name,
+                    "result": result}
+        title = jsondata["result"]["results"][0]["recordings"][2].get("title","")
+        artist = jsondata["result"]["results"][0]["recordings"][2].get("artists","")
+        filename  = temp_file_path.name
+        body = f"""
+            Thank you for using Matchpoint Audio Analyzer service. Our System has analyzed the audio file and Below are the analysis details.
+                Human Voices:
+                No. of Male voices :
+                No. of femal Voices :
+                Music Title : {title}
+                Music Artist : {artist}
+                Filename : {filename}
+            Note: Matchpoint human Voice identification service works with 80% accuracy.
+        """
+        try:
+            send_email(SUBJECT, body,str(receiver_email), SMTP_SERVER, SMTP_PORT, SMTP_USER, SMTP_PASSWORD)
+            print(f"Email Notification sent to {receiver_email}")
+            email = f"Email Notification sent to {receiver_email}"
+        except:
+            print("Email Notification not sent")
+            email = f"Email Notification not sent to {receiver_email}"
+        body = f"""
+            Thank you for using Matchpoint Audio Analyzer service. Our System has analyzed the audio file and Below are the analysis details.
+                Human Voices:
+                No. of Male voices :
+                No. of femal Voices :
+                Music Title : {title}
+                Music Artist : {artist}
+                Filename : {filename}
+                Email : {email}
+            Note: Matchpoint human Voice identification service works with 80% accuracy.
+        """
+        return body
+    except Exception as error:
+        print(f"Error: {error}")
+        return "Unable to Process the audio file"
 
+demo = gr.Interface(fn= gradio_audio_file_analysis,
+                    inputs = [
+                    "file",
+                    gr.Textbox(label="Email",info="Receive an Email Notification")
+                    ],
+                    outputs = "text",
+                    allow_flagging="never")
+demo.launch()
