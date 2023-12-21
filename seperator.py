@@ -1,6 +1,7 @@
 import os
 from spleeter.separator import Separator
-from config import OUTPUT_DIR
+
+OUTPUT_DIR = os.makedirs("./data")
 
 def audio_seperator(input_audio_path, output_dir = OUTPUT_DIR):
     file_list = list()
