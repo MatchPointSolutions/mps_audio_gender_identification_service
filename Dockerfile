@@ -14,8 +14,8 @@ COPY requirements.txt .
 COPY . .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-EXPOSE 7882
+EXPOSE 7860
 
-# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "test:app", "--host", "0.0.0.0", "--port", "7860"]
 
 CMD ["python", "main.py"]
