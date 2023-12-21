@@ -7,6 +7,7 @@ from acr_cloud import acr_cloud_identify_audio
 from voice_recognition_model import identify_the_audio
 from multi_voice_recognition_model import get_multi_voice_output
 from acoust_id import get_acoust_id_audio_details
+from seperator import audio_seperator
 from config import SMTP_PASSWORD, SMTP_PORT, SMTP_SERVER, SMTP_USER, SUBJECT
 from log import setup_logger
 logger = setup_logger(__name__)
@@ -78,7 +79,6 @@ def gradio_audio_file_analysis(input_file,receiver_email):
     try:
         temp_file_path = Path(input_file)
         result = get_acoust_id_audio_details(input_file)
-        result1 = get_multi_voice_output(input_file)
         jsondata = {"filename": temp_file_path.name,
                     "result": result}
         title = jsondata["result"]["results"][0]["recordings"][2].get("title","")
@@ -87,7 +87,6 @@ def gradio_audio_file_analysis(input_file,receiver_email):
         body = f"""
             Thank you for using Matchpoint Audio Analyzer service. Our System has analyzed the audio file and Below are the analysis details.
                 Human Voices:
-                {result1}
                 No. of Male voices :
                 No. of femal Voices :
                 Music Title : {title}
@@ -118,11 +117,17 @@ def gradio_audio_file_analysis(input_file,receiver_email):
         print(f"Error: {error}")
         return "Unable to Process the audio file"
 
-demo = gr.Interface(fn= gradio_audio_file_analysis,
+demo1 = gr.Interface(fn= gradio_audio_file_analysis,
                     inputs = [
                     "file",
                     gr.Textbox(label="Email",info="Receive an Email Notification")
                     ],
                     outputs = "text",
                     allow_flagging="never")
-demo.launch(server_name="0.0.0.0", server_port=7860)
+demo1.launch(server_name="0.0.0.0", server_port=7860)
+
+demo2 = gr.Interface(fn= audio_seperator,
+                    inputs = "file",
+                    outputs = "text",
+                    allow_flagging="never")
+demo2.launch(server_name="0.0.0.0", server_port=7860)
