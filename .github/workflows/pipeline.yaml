@@ -50,14 +50,14 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-        - name: Deploy Azure App Service
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: gender-identification-app
-            slot-name: production
-            publish-profile: ${{ secrets.PUBLISH_PROFILE }}
-            package: .
-            images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
+      - name: Deploy Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: gender-identification-app
+          slot-name: production
+          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
+          package: .
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
             # environment-variables:
             #   - LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
             #     MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
