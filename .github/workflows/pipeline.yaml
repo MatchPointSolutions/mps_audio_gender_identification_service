@@ -30,7 +30,7 @@ jobs:
       - name: Build and tag Docker image
         run: >
           IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
-
+          echo ${{ secrets.env }} > env_from_github_secrets
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${IMAGE_TAG} .
       - name: Push Docker image
         run: >
@@ -50,13 +50,25 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: deploy Container App
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          acrName: mpsacr
-          containerAppName: gender-identification-service
-          resourceGroup: audio-poc-rg
-          imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
+        - name: Deploy Azure App Service
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: gender-identification-app
+            slot-name: production
+            publish-profile: ${{ secrets.PUBLISH_PROFILE }}
+            package: .
+            images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
+            # environment-variables:
+            #   - LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
+            #     MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
+            #     DATASET: ${{ secrets.DATASET }}
+      # - name: deploy Container App
+      #   uses: azure/container-apps-deploy-action@v1
+      #   with:
+      #     acrName: mpsacr
+      #     containerAppName: gender-identification-service
+      #     resourceGroup: audio-poc-rg
+      #     imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
           # environmentVariables:
           #   - LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
           #     MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
