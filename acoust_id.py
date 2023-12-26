@@ -35,8 +35,8 @@ def calculate_fingerprints(filename):
             duration = int(data[duration_index:duration_end_index])
             fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
             fingerprint = data[fingerprint_index:].strip()
-            logger.info(fingerprint)
-            logger.info(duration)
+            # logger.info(fingerprint)
+            logger.info("Duration: {}".format(duration))
             return duration, fingerprint
     elif result.stderr:
             data = str(result.stderr)
@@ -46,8 +46,8 @@ def calculate_fingerprints(filename):
             duration = int(data[duration_index:duration_end_index])
             fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
             fingerprint = data[fingerprint_index:].strip()
-            logger.info(fingerprint)
-            logger.info(duration)
+            # logger.info(fingerprint)
+            logger.info("Duration: {}".format(duration))
             return duration, fingerprint
 
     # try:
@@ -82,7 +82,7 @@ def get_acoust_id_audio_details(file_path):
         logger.info(url)
         response = requests.get(url)
         data = response.json()
-        logger.info(f"response data: {data}")
+        logger.info(f"data extracted!!!!")
         return data
     except Exception as error:
         logger.info(f"in get_acoust_id_audio_details: Error: {error}")

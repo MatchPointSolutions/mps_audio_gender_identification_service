@@ -117,11 +117,12 @@ def audio_seperator(file):
 def gradio_audio_file_analysis(input_file,receiver_email):
     try:
         temp_file_path = Path(input_file)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            result1thread = executor.submit(get_acoust_id_audio_details,input_file)
-            result2thread = executor.submit(audio_seperator,input_file)
-        result1 = result1thread.result()
-        result2 = result2thread.result()
+        # with concurrent.futures.ThreadPoolExecutor() as executor:
+        #     result1thread = executor.submit(get_acoust_id_audio_details,input_file)
+        #     result2thread = executor.submit(audio_seperator,input_file)
+        result2 = audio_seperator(input_file)
+        result1 = get_acoust_id_audio_details(input_file)
+        
         jsondata = {"filename": temp_file_path.name,
                     "result": result1}
         # is empty results
