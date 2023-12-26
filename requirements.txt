@@ -16,6 +16,8 @@ chromaprint
 pyaudio
 pyacoustid
 secure-smtplib
-gradio
+gradio==4.9.1
 pathlib
-spleeter
+# spleeter
+# protobuf==3.20.1
+

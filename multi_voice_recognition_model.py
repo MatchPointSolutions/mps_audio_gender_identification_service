@@ -39,6 +39,6 @@ def get_multi_voice_output(audio_file):
     gender_counts = Counter(speaker_list)
     male_count = gender_counts.get("male", 0)
     female_count = gender_counts.get("female", 0)
-    Counts = {"No of Male Voices": f"{male_count}",
-              "No of Female Voices": f"{female_count}"}
+    Counts = {"male_count": f"{male_count}",
+              "female_count": f"{female_count}"}
     return Counts
