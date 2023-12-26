@@ -6,4 +6,4 @@ COPY . .
 EXPOSE 7860
 # CMD ["uvicorn", "test:app", "--host", "0.0.0.0", "--port", "7860"]
 
-CMD ["sh", "-c", "gradio run main.py & tail -f /dev/null"]
+CMD ["sh", "-c", "python main.py && tail -f /dev/null"]
