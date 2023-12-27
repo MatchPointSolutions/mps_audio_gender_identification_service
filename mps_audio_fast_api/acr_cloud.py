@@ -12,7 +12,7 @@ import hmac
 import os
 import sys
 import time
-from mps_audio_fast_api.config import HOST, ACCESS_KEY, ACCESS_SECRET
+from config import HOST, ACCESS_KEY, ACCESS_SECRET
 import requests
 
 
