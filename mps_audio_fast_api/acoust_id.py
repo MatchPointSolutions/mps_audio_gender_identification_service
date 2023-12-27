@@ -1,6 +1,6 @@
 import requests
 import subprocess
-from mps_audio_fast_api.config import ACOUST_ID_TOKEN
+from config import ACOUST_ID_TOKEN
 from log import setup_logger
 logger = setup_logger(__name__)
 
