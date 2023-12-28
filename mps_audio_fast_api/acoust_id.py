@@ -7,72 +7,65 @@ logger = setup_logger(__name__)
 
 
 
-def generate_fingerprint(file_path):
-    try:
-        result = subprocess.run(
-            ['ffmpeg', '-i', file_path, '-f', 'chromaprint', '-'],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        output = result.stderr
-        logger.info(output)
-        return output
-    except subprocess.CalledProcessError as error:
-        logger.error(f"Error generating fingerprint: {error}")
-        logger.info(f"Error generating fingerprint: {error}")
-        return {"message": "Error generating fingerprint"}
-
 
 def calculate_fingerprints(filename):
+    duration = ""
+    fingerprint = ""
     command = ['fpcalc', filename]
-    result = subprocess.run(command, capture_output=True, text=True, check=True)
-    if result.stdout:
-            data = str(result.stdout)
-            logger.info(data)
-            duration_index = data.find('DURATION=') + len('DURATION=')
-            duration_end_index = data.find('\n', duration_index)
-            duration = int(data[duration_index:duration_end_index])
-            fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
-            fingerprint = data[fingerprint_index:].strip()
-            # logger.info(fingerprint)
-            logger.info("Duration: {}".format(duration))
-            return duration, fingerprint
-    elif result.stderr:
-            data = str(result.stderr)
-            logger.info(data)
-            duration_index = data.find('DURATION=') + len('DURATION=')
-            duration_end_index = data.find('\n', duration_index)
-            duration = int(data[duration_index:duration_end_index])
-            fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
-            fingerprint = data[fingerprint_index:].strip()
-            # logger.info(fingerprint)
-            logger.info("Duration: {}".format(duration))
-            return duration, fingerprint
-
-
-def get_duration(file_path):
     try:
-        result = subprocess.run(['ffprobe', '-i', file_path, '-show_entries', 'format=duration', '-v', 'quiet', '-of', 'csv=p=0'],
-                                capture_output=True, text=True)
-        duration = float(result.stdout.strip())
-        logger.info(f"duration: {duration}")
-        return duration
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        if result.stdout:
+                data = str(result.stdout)
+                logger.info(data)
+                duration_index = data.find('DURATION=') + len('DURATION=')
+                duration_end_index = data.find('\n', duration_index)
+                duration = int(data[duration_index:duration_end_index])
+                fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
+                fingerprint = data[fingerprint_index:].strip()
+                # logger.info(fingerprint)
+                logger.info("Duration: {}".format(duration))
+                return duration, fingerprint
+        elif result.stderr:
+                data = str(result.stderr)
+                logger.info(data)
+                duration_index = data.find('DURATION=') + len('DURATION=')
+                duration_end_index = data.find('\n', duration_index)
+                duration = int(data[duration_index:duration_end_index])
+                fingerprint_index = data.find('FINGERPRINT=') + len('FINGERPRINT=')
+                fingerprint = data[fingerprint_index:].strip()
+                # logger.info(fingerprint)
+                logger.info("Duration: {}".format(duration))
+                return duration, fingerprint
+        else:
+            logger.info("No output from fpcalc")
+            logger.info("Duration: {}".format(duration))
+            logger.info("Fingerprint: {}".format(fingerprint))
+            return duration, fingerprint
     except Exception as error:
-        logger.info(f"Error getting audio duration: {error}")
-        return {"message":"Unable to get audio duration" }
+         logger.info(f"in calculate_fingerprints: couldn't calculate fingerprint for the given file: {error}")
+         return duration, fingerprint
 
 
 def get_acoust_id_audio_details(file_path):
-    duration,fingerprint = calculate_fingerprints(file_path)
-    api_key = ACOUST_ID_TOKEN
     try:
-        url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&meta=recordings+releasegroups+compress&duration={duration}&fingerprint={fingerprint}"""
-        logger.info(url)
-        response = requests.get(url)
-        data = response.json()
-        logger.info(f"data extracted!!!!")
-        return data
+        duration,fingerprint = calculate_fingerprints(file_path)
     except Exception as error:
-        logger.info(f"in get_acoust_id_audio_details: Error: {error}")
-        return {"message":"Unable to generate fingerprint for the file" }
+        duration = ""
+        fingerprint = ""
+        logger.info(f"in get_acoust_id_audio_details: couldn't calculate fingerprint for the given file: {error}")
+
+    if fingerprint != "":
+        api_key = ACOUST_ID_TOKEN
+        try:
+            url = f"""https://api.acoustid.org/v2/lookup?client={api_key}&meta=recordings+releasegroups+compress&duration={duration}&fingerprint={fingerprint}"""
+            logger.info(url)
+            response = requests.get(url)
+            data = response.json()
+            logger.info(f"data extracted!!!!")
+            return data
+        except Exception as error:
+            logger.info(f"in get_acoust_id_audio_details: couldn't find the relavant details for the audio: {error}")
+            return { "results": [] }
+    else: 
+         logger.info(f"in get_acoust_id_audio_details: couldn't generate fingerprint for the given file: {error}")
+         return {"results": []}

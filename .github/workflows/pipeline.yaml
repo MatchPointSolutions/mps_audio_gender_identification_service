@@ -3,7 +3,7 @@ name: build and deploy to Azure Container App
 on:
   push:
     branches:
-      - main
+      # - main
 jobs:
   build:
     runs-on: ubuntu-latest

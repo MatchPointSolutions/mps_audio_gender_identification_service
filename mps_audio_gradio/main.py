@@ -8,12 +8,20 @@ logger = setup_logger(__name__)
 
 
 def call_fastapi(email_address,input_file):
-    temp_file_path = Path(input_file)
-    response = requests.post(f"{FASTAPI_URL}/mps_audio_recognition_service", receiver_email=email_address,file = temp_file_path)
+    # temp_file_path = Path(input_file)
+    filename = input_file.split("/")[-1]
+    with open(input_file, "rb") as audio_file:
+    # Create a dictionary with the audio file data
+        audio_content = audio_file.read()
+    files = {"file": (filename, audio_content)}
+    response = requests.post(f"{FASTAPI_URL}/mps_audio_recognition_service?receiver_email={email_address}", files=files)
     result = response.json()["result"]
     return result
 
-demo = gr.Interface(fn= call_fastapi,
+demo = gr.Interface(
+                    title="Audio Analysis",
+                    css="footer {visibility: hidden}",
+                    fn= call_fastapi,
                     inputs = [
                     gr.Textbox(label="Email",info="Receive an Email Notification"),
                     "file"
