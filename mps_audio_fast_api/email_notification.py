@@ -1,8 +1,13 @@
+"""
+SMTP Email Notification setup
+"""
 import smtplib
 from email.message import EmailMessage
-from config import SMTP_PASSWORD, SMTP_PORT, SMTP_SERVER, SMTP_USER, SUBJECT
 
 def send_email(subject, body, receiver_email, smtp_server, smtp_port, smtp_user, smtp_password):
+    """
+    Send the extracted data to the considered email address via SMPT
+    """
     message = EmailMessage()
     message.set_content(body)
     message['Subject'] = subject

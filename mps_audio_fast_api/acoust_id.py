@@ -1,3 +1,7 @@
+"""
+The code accepts the acoust_id token to access the acoust id database to search
+the audio file background music
+"""
 import requests
 import subprocess
 from config import ACOUST_ID_TOKEN
@@ -5,10 +9,13 @@ from log import setup_logger
 logger = setup_logger(__name__)
 
 
-
-
-
 def calculate_fingerprints(filename):
+    """
+    Args: filename (audio file path)
+    -   here the fpcalc is used to convert audio file to fingerprint and calculate total duration.
+        If there are any errors in converting or calculating, it will return None for both values.
+    Output: fingerprint, duration
+    """
     duration = ""
     fingerprint = ""
     command = ['fpcalc', filename]
@@ -47,6 +54,12 @@ def calculate_fingerprints(filename):
 
 
 def get_acoust_id_audio_details(file_path):
+    """
+    Args: file_path (audio file path)
+    -   This function uses AcoustId API to fetch details of an audio file like genre, artist etc.
+        if the database doesn't contain details it returns empty results
+    Output: dict with keys 'genre','artist','title' and their corresponding values
+    """
     try:
         duration,fingerprint = calculate_fingerprints(file_path)
     except Exception as error:
@@ -66,6 +79,6 @@ def get_acoust_id_audio_details(file_path):
         except Exception as error:
             logger.info(f"in get_acoust_id_audio_details: couldn't find the relavant details for the audio: {error}")
             return { "results": [] }
-    else: 
+    else:
          logger.info(f"in get_acoust_id_audio_details: couldn't generate fingerprint for the given file: {error}")
          return {"results": []}

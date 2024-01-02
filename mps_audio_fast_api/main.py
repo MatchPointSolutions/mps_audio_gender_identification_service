@@ -1,29 +1,32 @@
+"""
+MPS Audio Analyser uses the fastapi service to extract the details
+from the uploaded audio file
+"""
 import os
 import subprocess
 import shutil
-import concurrent.futures
 import uvicorn
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
 from fastapi import FastAPI, File, UploadFile
 from email_notification import send_email
-from acr_cloud import acr_cloud_identify_audio
-from voice_recognition_model import identify_the_audio
 from multi_voice_recognition_model import get_multi_voice_output
 from acoust_id import get_acoust_id_audio_details
 from config import SMTP_PASSWORD, SMTP_PORT, SMTP_SERVER, SMTP_USER, SUBJECT
 from log import setup_logger
 logger = setup_logger(__name__)
+
 app = FastAPI()
-
-
-
 OUTPUT_DIR = "./data"
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
 
 
 def audio_seperator(file):
+    """
+    Args: file (audio file path)
+    -   Spleeter is used to seperate vocals and music in an audio file
+    Output: "vocals.wav"
+    """
     try:
         logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         logger.info("file: {}".format(file))
@@ -53,8 +56,13 @@ def audio_seperator(file):
 
 @app.post("/mps_audio_recognition_service/")
 async def upload_file(receiver_email, file: UploadFile = File(...)):
-    
-    data_dict = dict()
+    """
+    Args: receiver_email (message to be sent to the concerned email)
+          file (uploaded audio file)
+    -   result1 uses audio_seperator function to seperate vocals and music
+    -   result2 uses get_acoust_id_details function to get music details from acoust id database
+    Output: body (result1, result2)
+    """
     with open(file.filename, "wb") as f:
         f.write(file.file.read())
     logger.info(file.filename)
@@ -63,8 +71,8 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
         result2 = audio_seperator(file.filename)
     except:
         result2 = {"male_count": 0, "female_count": 0}
-       
-    
+
+
     logger.info("result2: -------->>>> {}".format(result2))
     try:
         result1 = get_acoust_id_audio_details(file.filename)
@@ -116,7 +124,7 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
     """
     shutil.rmtree(OUTPUT_DIR)
     return {"result": body}
-    
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_level="info")

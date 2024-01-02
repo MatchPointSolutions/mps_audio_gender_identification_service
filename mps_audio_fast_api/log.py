@@ -2,8 +2,8 @@
 Logger Setup
 """
 import logging
-from config import LOG_FILE_PATH
 import sys
+from config import LOG_FILE_PATH
 
 
 

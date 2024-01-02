@@ -1,3 +1,6 @@
+"""
+Uses Gradio open source python library for UI Interface
+"""
 import os
 import requests
 import gradio as gr
@@ -8,6 +11,13 @@ logger = setup_logger(__name__)
 
 
 def call_fastapi(email_address,input_file):
+    """
+    Args: email_address (receiver email address)
+          input_file (path to the file containing audio to be analyzed)
+    -   the file contents are sent over the API endpoint to get processed by
+        MPS Audio Analyser
+    Output: result (text)
+    """
     # temp_file_path = Path(input_file)
     filename = input_file.split("/")[-1]
     with open(input_file, "rb") as audio_file:

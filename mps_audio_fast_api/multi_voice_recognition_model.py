@@ -1,3 +1,7 @@
+"""
+The code uses pyannote from Hugging Face to seperate audio files into different
+segment later it is fed to Machine Learning Model to identify the human voices
+"""
 import os
 from collections import Counter
 from pyannote.audio import Pipeline
@@ -11,6 +15,10 @@ logger = setup_logger(__name__)
 
 
 def get_multi_voice_output(audio_file):
+    """
+    Args: audio_file (audio file path)
+    Output: male count, female count
+    """
     pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.1",use_auth_token=ACCESS_TOKEN)
     diarization = pipeline(audio_file)
     y, sr = librosa.load(audio_file)

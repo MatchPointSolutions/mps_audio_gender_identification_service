@@ -6,8 +6,6 @@ from config import LOG_FILE_PATH
 import sys
 
 
-
-
 def setup_logger(logger_name, level=logging.INFO):
     """
     Setup the logger and return the logger object.
