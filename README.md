@@ -13,6 +13,7 @@
 ## RUN:
 fastapi service - ``` py mps_audio_fast_api/main.py ```
 
+gradio service - ``` py mps_audio_gradio/main.py ```
 
 ## Environment Variables
 
@@ -30,4 +31,3 @@ fastapi service - ``` py mps_audio_fast_api/main.py ```
 | `SUBJECT` | `string` | **Required**. Subject to send in email |
 | `DATASET` | `string` | trained model datset |
 | `FASTAPI_URL` | `string` | |
-
