@@ -30,10 +30,10 @@ jobs:
       - name: Build and tag API Docker image
         run: >
           echo ${{ secrets.env }} > env_from_github_secrets
-          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile .
+          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile mps_audio_fast_api
       - name: Build and tag Web Docker image
         run: >
-          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest -f mps_audio_gradio/Dockerfile .
+          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest -f mps_audio_gradio/Dockerfile mps_audio_gradio
       - name: Push API Docker image
         run: >
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest
