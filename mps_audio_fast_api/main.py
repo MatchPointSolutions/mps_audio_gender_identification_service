@@ -70,7 +70,7 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
 
         result2 = audio_seperator(file.filename)
     except:
-        result2 = {"male_count": 0, "female_count": 0}
+        result2 = {"male_count": 0, "female_count": 0, "child_count":0}
 
 
     logger.info("result2: -------->>>> {}".format(result2))
@@ -91,16 +91,19 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
     if result2 is not None:
         male_count = result2["male_count"]
         female_count = result2["female_count"]
+        child_count = result2["child_count"]
     else:
         male_count = 0
         female_count = 0
+        child_count = 0
         logger.info("MPS ML model failed to process the audio file")
     filename  = file.filename
     body = f"""
         Thank you for using Matchpoint Audio Analyzer service. Our System has analyzed the audio file and Below are the analysis details.
             Human Voices:
             No. of Male voices : {male_count}
-            No. of femal Voices : {female_count}
+            No. of femal voices : {female_count}
+            No. of child voices : {child_count}
             Music Title : {title}
             Music Artist : {artist}
             Filename : {filename}
@@ -117,6 +120,7 @@ async def upload_file(receiver_email, file: UploadFile = File(...)):
             Human Voices:
             No. of Male voices : {male_count}
             No. of femal Voices : {female_count}
+            No. of child voices : {child_count}
             Music Title : {title}
             Music Artist : {artist}
             Filename : {filename}

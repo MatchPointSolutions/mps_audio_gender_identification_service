@@ -2,7 +2,7 @@
 
 ## WorkFlow:
 
--   The code works on identifying the number of Male voices, Female voices and Background music in an audio file.
+-   The code works on identifying the number of Male voices, Female voices, Child voices and Background music in an audio file.
 -   The Implemented Machine Learning Model was trained on identifying the Male and Female voices.
 -   The Acoust id service is used to identify the background music being played in the audio file.
 
