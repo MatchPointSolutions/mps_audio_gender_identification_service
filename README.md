@@ -4,6 +4,8 @@
 
 `MPS AUDIO ANALYSER`  identifys the number of Male voices, Female voices, Child voices and Background music in an audio file which uses Machine Learning Models for identifying the Male and Female voices, later for identifying the music in an audio file it uses Acoust id service.
 
+Demo URI: https://audioanalyzer.matchps.com/
+
 ## Table of Contents
 
 - Prerequisites
