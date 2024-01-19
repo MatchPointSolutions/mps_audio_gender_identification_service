@@ -3,7 +3,7 @@ name: build and deploy to Azure Container App
 on:
   push:
     branches:
-      - main
+      # - main
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,16 +27,19 @@ jobs:
           key: ${{ runner.os }}-docker-${{ hashFiles('**/*.dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-docker-
-      - name: Build and tag Docker image
+      - name: Build and tag API Docker image
         run: >
-          IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
           echo ${{ secrets.env }} > env_from_github_secrets
-          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }} .
-      - name: Push Docker image
+          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile mps_audio_fast_api
+      - name: Build and tag Web Docker image
         run: >
-          IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
-
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
+          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest -f mps_audio_gradio/Dockerfile mps_audio_gradio
+      - name: Push API Docker image
+        run: >
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest
+      - name: Push Web Docker image
+        run: >
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -50,26 +53,6 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Deploy Azure App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: gender-identification-app
-          slot-name: production
-          publish-profile: ${{ secrets.PUBLISH_PROFILE }}
-          package: .
-          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
-            # environment-variables:
-            #   - LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
-            #     MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
-            #     DATASET: ${{ secrets.DATASET }}
-      # - name: deploy Container App
-      #   uses: azure/container-apps-deploy-action@v1
-      #   with:
-      #     acrName: mpsacr
-      #     containerAppName: gender-identification-service
-      #     resourceGroup: audio-poc-rg
-      #     imageToDeploy: mpsacr.azurecr.io/mps-audio-gender-identification-service:${{ steps.vars.outputs.sha_short }}
-          # environmentVariables:
-          #   - LOG_FILE_PATH: ${{ secrets.LOG_FILE_PATH }}
-          #     MODEL_FILENAME: ${{ secrets.MODEL_FILENAME }}
-          #     DATASET: ${{ secrets.DATASET }}
+      - name: Restart Azure App Service
+        run: |
+          az webapp restart --resource-group skillmatrix-dev --name gender-identification-app

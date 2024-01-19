@@ -1,0 +1,4 @@
+gradio==4.9.1
+pathlib
+requests
+python-dotenv

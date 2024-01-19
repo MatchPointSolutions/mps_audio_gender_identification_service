@@ -15,7 +15,6 @@ from log import setup_logger
 logger = setup_logger(__name__)
 
 
-
 def extract_features_1(file_path, max_len=100):
     """
         Extract Features from the audio file
