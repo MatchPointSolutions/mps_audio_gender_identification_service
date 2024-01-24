@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-docker-
       - name: Build and tag API Docker image
         run: >
-          echo ${{ secrets.env }} > env_from_github_secrets
+          echo ${{ secrets.env }} > mps_audio_fast_api/.env
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile mps_audio_fast_api
       - name: Build and tag Web Docker image
         run: >
