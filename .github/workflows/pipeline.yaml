@@ -3,7 +3,7 @@ name: build and deploy to Azure App Service
 on:
   push:
     branches:
-      # - main
+      - dev
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,16 +30,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Build and tag API Docker image
-        run: >
+        run: |
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile mps_audio_fast_api
       - name: Build and tag Web Docker image
-        run: >
+        run: |
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest -f mps_audio_gradio/Dockerfile mps_audio_gradio
       - name: Push API Docker image
-        run: >
+        run: |
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest
       - name: Push Web Docker image
-        run: >
+        run: |
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest
   deploy:
     needs: build
@@ -56,4 +56,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Restart Azure App Service
         run: |
-          az webapp restart --resource-group skillmatrix-dev --name gender-identification-app
+          az webapp restart --resource-group skillmatrix-dev --name gender-identification-ap
