@@ -13,6 +13,9 @@ jobs:
       - name: Set outputs
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Add .env file
+        run: |
+          echo "${{ secrets.ENV }}" > mps_audio_fast_api/.env
       - name: Docker Login
         uses: azure/docker-login@v1
         with:
@@ -29,17 +32,11 @@ jobs:
             ${{ runner.os }}-docker-
       - name: Build and tag API Docker image
         run: |
-          rm -rf mps_audio_fast_api/.env
-          echo ${{ secrets.env }} > mps_audio_fast_api/.env
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile mps_audio_fast_api
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest
       - name: Build and tag Web Docker image
         run: |
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest -f mps_audio_gradio/Dockerfile mps_audio_gradio
-      - name: Push API Docker image
-        run: |
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest
-      - name: Push Web Docker image
-        run: |
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_gradio_web:latest
   deploy:
     needs: build
