@@ -1,5 +1,5 @@
 ---
-name: build and deploy to Azure Container App
+name: build and deploy to Azure App Service
 on:
   push:
     branches:
