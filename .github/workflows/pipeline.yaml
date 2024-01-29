@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Echo Secret to File
+        run: |
+          echo "${{ secrets.env }}" > mps_audio_fast_api/.env
       - name: Set outputs
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
