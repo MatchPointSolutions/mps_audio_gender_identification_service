@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Echo Secret to File
-        run: echo "${{ secrets.env }}" > mps_audio_fast_api/.env
       - name: Set outputs
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -31,6 +29,8 @@ jobs:
             ${{ runner.os }}-docker-
       - name: Build and tag API Docker image
         run: |
+          rm -rf mps_audio_fast_api/.env
+          echo "${{ secrets.env }}" > mps_audio_fast_api/.env
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mps_audio_api:latest -f mps_audio_fast_api/Dockerfile mps_audio_fast_api
       - name: Build and tag Web Docker image
         run: |
